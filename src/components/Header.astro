@@ -1,0 +1,115 @@
+---
+interface Props {
+  settings: {
+    cvFile?: string;
+    cv_url?: string;
+  } | null;
+}
+const { settings } = Astro.props;
+const cvUrl = settings?.cv_url || '#';
+
+const links = [
+  { href: '/about', label: 'About' },
+  { href: '/work', label: 'Work' },
+  { href: '/projects', label: 'Projects' },
+  { href: '/experience', label: 'Experience' },
+];
+const path = Astro.url.pathname;
+---
+
+<header class="site-header">
+  <div class="wrap header-inner">
+    <a href="/" class="brand mono">DO<span class="dot">.</span></a>
+
+    <nav class="nav-desktop" aria-label="Primary">
+      {links.map((l) => (
+        <a href={l.href} class:list={['nav-link mono', { active: path.startsWith(l.href) }]}>{l.label}</a>
+      ))}
+    </nav>
+
+    <div class="header-actions">
+      <a href="/contact" class="btn btn-primary">Let's Work Together</a>
+      <button class="nav-toggle" id="nav-toggle" aria-expanded="false" aria-controls="nav-mobile" aria-label="Open menu">
+        <span></span><span></span>
+      </button>
+    </div>
+  </div>
+
+  <nav id="nav-mobile" class="nav-mobile" aria-label="Mobile">
+    {links.map((l) => (
+      <a href={l.href} class="mono">{l.label}</a>
+    ))}
+    <a href="/contact" class="mono">Contact</a>
+    {cvUrl !== '#' && <a href={cvUrl} class="mono">Download CV</a>}
+  </nav>
+</header>
+
+<style>
+  .site-header {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    background: rgba(11, 18, 32, 0.85);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--line);
+  }
+  .header-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-top: 1.1rem;
+    padding-bottom: 1.1rem;
+  }
+  .brand {
+    font-size: 1rem;
+    font-weight: 500;
+    letter-spacing: 0.06em;
+  }
+  .brand .dot { color: var(--signal); }
+  .nav-desktop { display: flex; gap: 2rem; }
+  .nav-link {
+    font-size: 0.78rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--ash);
+    padding-bottom: 2px;
+    border-bottom: 1px solid transparent;
+    transition: color 0.2s ease, border-color 0.2s ease;
+  }
+  .nav-link:hover, .nav-link.active { color: var(--paper); border-color: var(--signal); }
+
+  .header-actions { display: flex; align-items: center; gap: 1rem; }
+  .header-actions .btn-primary { display: inline-flex; }
+
+  .nav-toggle {
+    display: none;
+    width: 32px; height: 24px;
+    background: none; border: none;
+    flex-direction: column; justify-content: space-between;
+    padding: 0;
+  }
+  .nav-toggle span { display: block; height: 1.5px; background: var(--paper); }
+
+  .nav-mobile {
+    display: none;
+    flex-direction: column;
+    padding: 0 var(--gutter) 1.5rem;
+    gap: 1.1rem;
+  }
+  .nav-mobile a { font-size: 0.9rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--paper); }
+
+  @media (max-width: 780px) {
+    .nav-desktop, .header-actions .btn-primary { display: none; }
+    .nav-toggle { display: flex; }
+    .site-header.open .nav-mobile { display: flex; }
+  }
+</style>
+
+<script>
+  const toggle = document.getElementById('nav-toggle');
+  const header = document.querySelector('.site-header');
+  toggle?.addEventListener('click', () => {
+    const isOpen = header?.classList.toggle('open');
+    toggle.setAttribute('aria-expanded', String(!!isOpen));
+  });
+</script>

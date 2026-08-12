@@ -1,0 +1,166 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="noindex, nofollow" />
+  <title>Studio — Donald Okoli Portfolio</title>
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <style>
+    :root {
+      --ink: #0B1220; --ink-2: #121B2E; --ink-3: #1A2540;
+      --paper: #F3F1EA; --signal: #4C6BFF; --amber: #E7A94C;
+      --ash: #8B93A7; --ash-dim: #5B637A;
+      --line: rgba(243,241,234,0.12); --line-strong: rgba(243,241,234,0.22);
+      --danger: #E06B6B; --ok: #6BC28A;
+      --font-body: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      --font-mono: 'IBM Plex Mono', 'SF Mono', monospace;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0; background: var(--ink); color: var(--paper);
+      font-family: var(--font-body); line-height: 1.5;
+    }
+    a { color: var(--signal); }
+    .hidden { display: none !important; }
+
+    /* Login */
+    #login-screen {
+      min-height: 100vh; display: flex; align-items: center; justify-content: center;
+      padding: 2rem;
+    }
+    .login-box {
+      width: 100%; max-width: 360px; background: var(--ink-2);
+      border: 1px solid var(--line); border-radius: 6px; padding: 2rem;
+    }
+    .login-box h1 { font-size: 1.1rem; margin: 0 0 0.3rem; }
+    .login-box p.sub { color: var(--ash); font-size: 0.85rem; margin: 0 0 1.5rem; }
+
+    /* Layout */
+    #app-screen { display: flex; min-height: 100vh; }
+    nav.sidebar {
+      width: 220px; flex-shrink: 0; background: var(--ink-2);
+      border-right: 1px solid var(--line); padding: 1.5rem 0;
+      position: sticky; top: 0; height: 100vh; overflow-y: auto;
+    }
+    nav.sidebar .brand { padding: 0 1.5rem 1.5rem; font-family: var(--font-mono); font-size: 0.9rem; border-bottom: 1px solid var(--line); margin-bottom: 1rem; }
+    nav.sidebar .brand span { color: var(--signal); }
+    nav.sidebar button.nav-item {
+      display: block; width: 100%; text-align: left; background: none; border: none;
+      color: var(--ash); padding: 0.7rem 1.5rem; font-size: 0.85rem; cursor: pointer;
+      border-left: 2px solid transparent; font-family: var(--font-body);
+    }
+    nav.sidebar button.nav-item:hover { color: var(--paper); }
+    nav.sidebar button.nav-item.active { color: var(--paper); border-left-color: var(--signal); background: var(--ink-3); }
+    .sidebar-footer { padding: 1.5rem; border-top: 1px solid var(--line); margin-top: 1rem; }
+
+    main.content { flex-grow: 1; padding: 2rem 2.5rem 4rem; max-width: 900px; }
+    main.content h2 { font-size: 1.4rem; margin: 0 0 0.3rem; }
+    main.content p.section-sub { color: var(--ash); font-size: 0.9rem; margin: 0 0 2rem; }
+
+    /* Buttons */
+    button, .btn {
+      font-family: var(--font-mono); font-size: 0.78rem; text-transform: uppercase;
+      letter-spacing: 0.02em; padding: 0.7em 1.3em; border-radius: 4px;
+      border: 1px solid var(--line-strong); background: transparent; color: var(--paper);
+      cursor: pointer;
+    }
+    button.primary { background: var(--signal); border-color: var(--signal); color: var(--ink); font-weight: 600; }
+    button.danger { border-color: var(--danger); color: var(--danger); }
+    button.small { padding: 0.4em 0.9em; font-size: 0.7rem; }
+    button:disabled { opacity: 0.5; cursor: not-allowed; }
+    button:hover:not(:disabled) { border-color: var(--paper); }
+    button.primary:hover:not(:disabled) { opacity: 0.9; border-color: var(--signal); }
+
+    /* Forms */
+    input, textarea, select {
+      width: 100%; background: var(--ink-3); border: 1px solid var(--line-strong);
+      border-radius: 4px; color: var(--paper); padding: 0.7em 0.9em;
+      font-family: var(--font-body); font-size: 0.92rem; margin-top: 0.35rem;
+    }
+    input:focus, textarea:focus, select:focus { outline: 2px solid var(--signal); outline-offset: 1px; }
+    label.field { display: block; margin-bottom: 1.1rem; }
+    label.field > span.label-text { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--ash); }
+    label.field > span.hint { display: block; font-size: 0.72rem; color: var(--ash-dim); margin-top: 0.25rem; font-weight: 400; text-transform: none; letter-spacing: 0; }
+    .checkbox-field { display: flex; align-items: center; gap: 0.6rem; margin-bottom: 1.1rem; }
+    .checkbox-field input { width: auto; margin: 0; }
+    .checkbox-field span { font-size: 0.85rem; color: var(--paper); }
+
+    /* Item cards / list */
+    .item-card {
+      background: var(--ink-2); border: 1px solid var(--line); border-radius: 5px;
+      padding: 1.5rem; margin-bottom: 1rem;
+    }
+    .item-card-head {
+      display: flex; justify-content: space-between; align-items: center;
+      cursor: pointer; gap: 1rem;
+    }
+    .item-card-head h3 { margin: 0; font-size: 1rem; }
+    .item-card-head .meta { color: var(--ash-dim); font-size: 0.78rem; font-family: var(--font-mono); }
+    .item-card-body { margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px solid var(--line); }
+    .item-actions { display: flex; gap: 0.6rem; margin-top: 1.5rem; }
+
+    .toast {
+      position: fixed; bottom: 1.5rem; right: 1.5rem; background: var(--ink-3);
+      border: 1px solid var(--line-strong); border-radius: 4px; padding: 0.9rem 1.3rem;
+      font-size: 0.85rem; z-index: 200; max-width: 320px;
+    }
+    .toast.ok { border-color: var(--ok); color: var(--ok); }
+    .toast.error { border-color: var(--danger); color: var(--danger); }
+
+    .image-preview { width: 100%; max-width: 220px; border-radius: 4px; margin-top: 0.6rem; display: block; }
+    .error-text { color: var(--danger); font-size: 0.85rem; margin-top: 0.8rem; }
+    .empty-state { color: var(--ash-dim); font-size: 0.9rem; padding: 2rem 0; text-align: center; }
+
+    @media (max-width: 780px) {
+      #app-screen { flex-direction: column; }
+      nav.sidebar { width: 100%; height: auto; position: static; }
+      main.content { padding: 1.5rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- LOGIN -->
+  <div id="login-screen">
+    <div class="login-box">
+      <h1>Studio</h1>
+      <p class="sub">Sign in to edit the portfolio site.</p>
+      <form id="login-form">
+        <label class="field">
+          <span class="label-text">Email</span>
+          <input type="email" id="login-email" required autocomplete="username" />
+        </label>
+        <label class="field">
+          <span class="label-text">Password</span>
+          <input type="password" id="login-password" required autocomplete="current-password" />
+        </label>
+        <button type="submit" class="primary" style="width:100%;" id="login-btn">Sign in</button>
+        <p class="error-text hidden" id="login-error"></p>
+      </form>
+    </div>
+  </div>
+
+  <!-- APP -->
+  <div id="app-screen" class="hidden">
+    <nav class="sidebar">
+      <div class="brand">DO<span>.</span> Studio</div>
+      <button class="nav-item" data-section="settings">Site Settings</button>
+      <button class="nav-item" data-section="skills">Skills</button>
+      <button class="nav-item" data-section="results">Selected Results</button>
+      <button class="nav-item" data-section="experience">Experience</button>
+      <button class="nav-item" data-section="case_studies">Case Studies</button>
+      <button class="nav-item" data-section="projects">Projects</button>
+      <button class="nav-item" data-section="testimonials">Testimonials</button>
+      <div class="sidebar-footer">
+        <button class="primary" id="rebuild-btn" style="width:100%; margin-bottom:0.8rem;">Rebuild site</button>
+        <button id="logout-btn" style="width:100%;">Sign out</button>
+        <p style="font-size:0.68rem; color:var(--ash-dim); margin-top:1rem;">Changes save straight to the database. Rebuild the live site any time to publish them.</p>
+      </div>
+    </nav>
+    <main class="content" id="content"></main>
+  </div>
+
+  <script type="module" src="/studio/app.js"></script>
+</body>
+</html>

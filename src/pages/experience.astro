@@ -1,0 +1,113 @@
+---
+import Base from '../layouts/Base.astro';
+import { supabase } from '../lib/supabase';
+
+const { data: settings } = await supabase.from('settings').select('*').eq('id', 1).single();
+const { data: experience } = await supabase
+  .from('experience')
+  .select('*')
+  .order('sort_order', { ascending: true });
+---
+
+<Base
+  title="Experience"
+  description="Donald Okoli's professional experience across digital marketing, content strategy, sales and healthcare."
+>
+  <section class="section hero-small">
+    <div class="wrap">
+      <p class="eyebrow">Experience</p>
+      <h1>The full record.</h1>
+      {settings?.cv_url && <a href={settings.cv_url} class="link mono">Download the full CV &rarr;</a>}
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="wrap">
+      <div class="exp-full-list">
+        {(experience ?? []).map((e) => (
+          <details class="exp-item" open={e.featured}>
+            <summary>
+              <div class="summary-head">
+                <div>
+                  <h3>{e.company}</h3>
+                  <p class="role mono">{e.role}</p>
+                </div>
+                <p class="mono dates">{e.start_date} — {e.end_date}</p>
+              </div>
+            </summary>
+            <div class="exp-body">
+              <p>{e.summary}</p>
+              <ul>
+                {(e.achievements ?? []).map((a: string) => <li>{a}</li>)}
+              </ul>
+              {e.skills?.length > 0 && (
+                <div class="tag-row">
+                  {e.skills.map((s: string) => <span class="tag">{s}</span>)}
+                </div>
+              )}
+            </div>
+          </details>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="section education-section">
+    <div class="wrap grid-2">
+      <div>
+        <p class="eyebrow amber">Education</p>
+        <h3>B.Sc. Pharmacology, Toxicology &amp; Therapeutics</h3>
+        <p>College of Medicine, University of Lagos</p>
+        <p class="thesis">Thesis: Evaluation of Sub-chronic Toxicity of Aqueous Extract of <em>Justicia carnea</em> Leaves in Wistar Albino Rats</p>
+      </div>
+      <div>
+        <p class="eyebrow amber">Certifications</p>
+        <ul class="cert-list">
+          <li>Google Digital Marketing &amp; E-commerce Certificate</li>
+          <li>Meta Digital Marketing Associate Certificate</li>
+        </ul>
+        <p class="eyebrow amber" style="margin-top:2rem;">Leadership</p>
+        <ul class="cert-list">
+          <li>Content Lead, Pedagogic Hub — led a team of writers.</li>
+          <li>Mentor, Pedagogic Hub 2024 Summer Bootcamp — trained aspiring writers on SEO and storytelling.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .hero-small { padding-bottom: 0; }
+  .hero-small .link { margin-top: 1rem; display: inline-block; }
+
+  .exp-full-list { display: flex; flex-direction: column; }
+  .exp-item {
+    border-top: 1px solid var(--line);
+    padding: 1.75rem 0;
+  }
+  .exp-item:last-child { border-bottom: 1px solid var(--line); }
+  .exp-item summary {
+    cursor: pointer;
+    list-style: none;
+  }
+  .exp-item summary::-webkit-details-marker { display: none; }
+  .summary-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+  }
+  .summary-head h3 { margin-bottom: 0.25rem; }
+  .role { color: var(--ash); font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.03em; }
+  .dates { color: var(--ash-dim); font-size: 0.78rem; white-space: nowrap; }
+
+  .exp-body { padding-top: 1.5rem; max-width: 68ch; }
+  .exp-body ul { padding-left: 1.2rem; color: var(--ash); }
+  .exp-body li { margin-bottom: 0.5rem; }
+  .tag-row { display: flex; flex-wrap: wrap; gap: 0.6rem; margin-top: 1rem; }
+
+  .education-section { background: var(--ink-2); }
+  .thesis { font-size: 0.9rem; }
+  .cert-list { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 0.6rem; }
+</style>

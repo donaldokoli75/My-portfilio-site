@@ -1,0 +1,114 @@
+---
+import Base from '../layouts/Base.astro';
+import { supabase } from '../lib/supabase';
+
+const { data: settings } = await supabase.from('settings').select('*').eq('id', 1).single();
+---
+
+<Base
+  title="Contact"
+  description="Get in touch with Donald Okoli about remote roles, freelance work or consulting projects in digital marketing and content strategy."
+>
+  <section class="section hero-small">
+    <div class="wrap">
+      <p class="eyebrow">Contact</p>
+      <h1>Have a project, opportunity or role in mind?</h1>
+      {settings?.availability_enabled && (
+        <p class="availability mono">&#9679; {settings.availability_label}</p>
+      )}
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="wrap grid-2 contact-grid">
+      <div class="contact-details">
+        <div class="detail-block">
+          <p class="mono block-label">Email</p>
+          <a href={`mailto:${settings?.email}`} class="detail-value">{settings?.email}</a>
+        </div>
+        <div class="detail-block">
+          <p class="mono block-label">Phone</p>
+          <a href={`tel:${settings?.phone?.replace(/\s/g, '')}`} class="detail-value">{settings?.phone}</a>
+        </div>
+        <div class="detail-block">
+          <p class="mono block-label">Location</p>
+          <p class="detail-value">{settings?.location}</p>
+        </div>
+        <div class="detail-block">
+          <p class="mono block-label">Elsewhere</p>
+          <div class="social-links">
+            {settings?.social_linkedin && <a href={settings.social_linkedin} target="_blank" rel="noopener noreferrer">LinkedIn</a>}
+            {settings?.social_clippings && <a href={settings.social_clippings} target="_blank" rel="noopener noreferrer">Writing (Clippings.me)</a>}
+            {settings?.social_instagram && <a href={settings.social_instagram} target="_blank" rel="noopener noreferrer">Instagram</a>}
+          </div>
+        </div>
+      </div>
+
+      <form name="contact" method="POST" data-netlify="true" netlify-honeypot="company" class="contact-form">
+        <input type="hidden" name="form-name" value="contact" />
+        <p class="hp-field" aria-hidden="true">
+          <label>Don't fill this out if you're human: <input name="company" tabindex="-1" autocomplete="off" /></label>
+        </p>
+
+        <label class="field">
+          <span class="mono field-label">Name</span>
+          <input type="text" name="name" required />
+        </label>
+
+        <label class="field">
+          <span class="mono field-label">Email</span>
+          <input type="email" name="email" required />
+        </label>
+
+        <label class="field">
+          <span class="mono field-label">What's this about?</span>
+          <select name="topic">
+            <option>Full-time role</option>
+            <option>Contract / freelance work</option>
+            <option>Consulting</option>
+            <option>Something else</option>
+          </select>
+        </label>
+
+        <label class="field">
+          <span class="mono field-label">Message</span>
+          <textarea name="message" rows="5" required></textarea>
+        </label>
+
+        <button type="submit" class="btn btn-primary">Send message</button>
+      </form>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .hero-small { padding-bottom: 0; }
+  .availability { color: var(--amber); font-size: 0.85rem; margin-top: 1rem; }
+
+  .contact-grid { align-items: start; }
+  .detail-block { margin-bottom: 2rem; }
+  .block-label { font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--ash-dim); margin-bottom: 0.5rem; }
+  .detail-value { font-size: 1.15rem; color: var(--paper); }
+  a.detail-value:hover { color: var(--signal); }
+  .social-links { display: flex; flex-direction: column; gap: 0.5rem; }
+  .social-links a { color: var(--signal); }
+
+  .contact-form { display: flex; flex-direction: column; gap: 1.3rem; }
+  .field { display: flex; flex-direction: column; gap: 0.5rem; }
+  .field-label { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--ash); }
+  input, select, textarea {
+    background: var(--ink-2);
+    border: 1px solid var(--line-strong);
+    border-radius: var(--radius);
+    color: var(--paper);
+    padding: 0.8em 1em;
+    font-family: var(--font-body);
+    font-size: 0.95rem;
+  }
+  input:focus, select:focus, textarea:focus {
+    outline: 2px solid var(--signal);
+    outline-offset: 1px;
+  }
+  .hp-field { position: absolute; left: -9999px; }
+  .contact-form button { align-self: flex-start; border: none; }
+</style>

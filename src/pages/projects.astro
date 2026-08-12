@@ -1,0 +1,93 @@
+---
+import Base from '../layouts/Base.astro';
+import ProjectCard from '../components/ProjectCard.astro';
+import { supabase } from '../lib/supabase';
+
+const { data: settings } = await supabase.from('settings').select('*').eq('id', 1).single();
+
+const { data: all } = await supabase
+  .from('projects')
+  .select('*')
+  .eq('published', true)
+  .order('sort_order', { ascending: true });
+
+const scratch = (all ?? []).filter((p) => p.category === 'Built From Scratch');
+const digital = (all ?? []).filter((p) => p.category === 'Digital Experience');
+---
+
+<Base
+  title="Projects"
+  description="Independent ventures and digital products built by Donald Okoli, from brand identity to live website."
+>
+  <section class="section hero-small">
+    <div class="wrap">
+      <p class="eyebrow amber">Built From Scratch</p>
+      <h1>Independent brands and digital products.</h1>
+      <p class="intro">I don't only execute marketing for employers — I build brands, products and digital experiences on my own, from concept through to launch.</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="wrap">
+      <div class="grid-3">
+        {scratch.map((p) => (
+          <ProjectCard
+            title={p.title}
+            role={p.role}
+            description={p.description}
+            highlights={p.highlights}
+            externalUrl={p.external_url}
+            linkLabel={p.link_label}
+          />
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="section digital-section">
+    <div class="wrap">
+      <p class="eyebrow">Digital Experiences</p>
+      <h2>Websites and digital products, designed and built end to end.</h2>
+      <div class="grid-3" style="margin-top: 2.5rem;">
+        {digital.map((p) => (
+          <ProjectCard
+            title={p.title}
+            role={p.role}
+            description={p.description}
+            highlights={p.highlights}
+            externalUrl={p.external_url}
+            linkLabel={p.link_label}
+          />
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="wrap writing-cta">
+      <div>
+        <p class="eyebrow">Writing</p>
+        <h2>Read my published writing.</h2>
+        <p>My writing archive lives on Clippings.me — content writing, ghostwriting and editorial work outside this site's case studies.</p>
+      </div>
+      {settings?.social_clippings && (
+        <a href={settings.social_clippings} target="_blank" rel="noopener noreferrer" class="btn btn-primary">View Writing Portfolio</a>
+      )}
+    </div>
+  </section>
+</Base>
+
+<style>
+  .hero-small { padding-bottom: 0; }
+  .intro { max-width: 56ch; font-size: 1.05rem; }
+  .digital-section { background: var(--ink-2); }
+
+  .writing-cta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 2rem;
+    flex-wrap: wrap;
+  }
+  .writing-cta p { max-width: 44ch; }
+</style>

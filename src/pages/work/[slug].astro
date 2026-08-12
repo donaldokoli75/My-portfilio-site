@@ -1,0 +1,152 @@
+---
+import Base from '../../layouts/Base.astro';
+import { supabase } from '../../lib/supabase';
+
+export async function getStaticPaths() {
+  const { data: caseStudies } = await supabase
+    .from('case_studies')
+    .select('*')
+    .eq('published', true);
+
+  return (caseStudies ?? []).map((cs) => ({
+    params: { slug: cs.slug },
+    props: { entry: cs },
+  }));
+}
+
+const { entry: d } = Astro.props;
+---
+
+<Base title={d.title} description={d.summary}>
+  <section class="section case-hero">
+    <div class="wrap">
+      <a href="/work" class="link mono back-link">&larr; All case studies</a>
+      <p class="eyebrow">Case File</p>
+      <h1>{d.title}</h1>
+      <p class="summary">{d.summary}</p>
+
+      <dl class="meta-grid mono">
+        <div><dt>Client</dt><dd>{d.client}</dd></div>
+        <div><dt>Role</dt><dd>{d.role}</dd></div>
+        <div><dt>Industry</dt><dd>{d.industry}</dd></div>
+        <div><dt>Date</dt><dd>{d.date}</dd></div>
+        <div><dt>Status</dt><dd>{d.status}</dd></div>
+      </dl>
+
+      {d.services?.length > 0 && (
+        <div class="tag-row">
+          {d.services.map((s: string) => <span class="tag">{s}</span>)}
+        </div>
+      )}
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="wrap narrative-grid">
+      {d.context && (
+        <div class="narrative-block">
+          <p class="mono block-label">Context</p>
+          <p>{d.context}</p>
+        </div>
+      )}
+      {d.approach && (
+        <div class="narrative-block">
+          <p class="mono block-label">Approach</p>
+          <p>{d.approach}</p>
+        </div>
+      )}
+      {d.execution && (
+        <div class="narrative-block">
+          <p class="mono block-label">Execution</p>
+          <p>{d.execution}</p>
+        </div>
+      )}
+    </div>
+  </section>
+
+  {d.results?.length > 0 && (
+    <section class="section results-section">
+      <div class="wrap">
+        <p class="eyebrow amber">Results</p>
+        <ul class="results-list">
+          {d.results.map((r: string) => <li>{r}</li>)}
+        </ul>
+      </div>
+    </section>
+  )}
+
+  {d.tools?.length > 0 && (
+    <section class="section">
+      <div class="wrap">
+        <p class="mono block-label">Tools &amp; Methods</p>
+        <div class="tag-row">
+          {d.tools.map((t: string) => <span class="tag">{t}</span>)}
+        </div>
+      </div>
+    </section>
+  )}
+
+  {d.cover_image && (
+    <div class="wrap content-body">
+      <img src={d.cover_image} alt={`${d.title} cover`} loading="lazy" />
+    </div>
+  )}
+
+  {d.external_url && (
+    <div class="wrap content-body">
+      <a href={d.external_url} target="_blank" rel="noopener noreferrer" class="link mono">Visit project &rarr;</a>
+    </div>
+  )}
+
+  <section class="section cta-section">
+    <div class="wrap cta-wrap">
+      <h2>Have a similar challenge?</h2>
+      <a href="/contact" class="btn btn-primary">Let's talk</a>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .back-link { display: inline-block; margin-bottom: 2rem; font-size: 0.8rem; }
+  .summary { max-width: 60ch; font-size: 1.1rem; margin-bottom: 2.5rem; }
+
+  .meta-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 1.5rem;
+    border-top: 1px solid var(--line-strong);
+    border-bottom: 1px solid var(--line-strong);
+    padding: 1.5rem 0;
+    margin-bottom: 2rem;
+  }
+  .meta-grid dt { font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--ash-dim); margin-bottom: 0.3rem; }
+  .meta-grid dd { margin: 0; font-size: 0.85rem; color: var(--paper); }
+  @media (max-width: 780px) { .meta-grid { grid-template-columns: repeat(2, 1fr); } }
+
+  .tag-row { display: flex; flex-wrap: wrap; gap: 0.6rem; }
+
+  .narrative-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2.5rem; }
+  @media (max-width: 860px) { .narrative-grid { grid-template-columns: 1fr; } }
+  .block-label { font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--signal); margin-bottom: 0.8rem; }
+
+  .results-section { background: var(--ink-2); }
+  .results-list { list-style: none; padding: 0; margin: 2rem 0 0; display: flex; flex-direction: column; gap: 1.2rem; }
+  .results-list li {
+    padding-left: 1.8rem;
+    position: relative;
+    font-size: 1.05rem;
+    color: var(--paper);
+  }
+  .results-list li::before {
+    content: '';
+    position: absolute;
+    left: 0; top: 0.5em;
+    width: 8px; height: 8px;
+    background: var(--amber);
+    border-radius: 50%;
+  }
+
+  .content-body { padding: 1rem 0; color: var(--ash); }
+  .cta-section { text-align: center; border-bottom: none; }
+  .cta-wrap { max-width: 500px; margin: 0 auto; }
+</style>

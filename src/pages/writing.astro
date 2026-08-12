@@ -1,0 +1,27 @@
+---
+import Base from '../layouts/Base.astro';
+import { supabase } from '../lib/supabase';
+
+const { data: settings } = await supabase.from('settings').select('*').eq('id', 1).single();
+---
+
+<Base
+  title="Writing"
+  description="Donald Okoli's writing portfolio, hosted on Clippings.me."
+>
+  <section class="section writing-hero">
+    <div class="wrap">
+      <p class="eyebrow">Writing</p>
+      <h1>My writing archive lives elsewhere.</h1>
+      <p class="intro">Content writing, ghostwriting and editorial work sit in a dedicated archive on Clippings.me. This site is the hub — Clippings.me is where the writing itself lives.</p>
+      {settings?.social_clippings && (
+        <a href={settings.social_clippings} target="_blank" rel="noopener noreferrer" class="btn btn-primary">View Writing Portfolio &rarr;</a>
+      )}
+    </div>
+  </section>
+</Base>
+
+<style>
+  .writing-hero { text-align: center; padding: clamp(4rem, 10vw, 8rem) 0; border-bottom: none; }
+  .intro { max-width: 50ch; margin: 0 auto 2rem; font-size: 1.05rem; }
+</style>

@@ -1,0 +1,92 @@
+---
+import Base from '../layouts/Base.astro';
+import { supabase } from '../lib/supabase';
+
+const { data: settings } = await supabase.from('settings').select('*').eq('id', 1).single();
+const { data: skillCategories } = await supabase
+  .from('skill_categories')
+  .select('*')
+  .order('sort_order', { ascending: true });
+---
+
+<Base
+  title="About"
+  description="Donald Okoli is a digital marketing and content strategist with a background in pharmacology, working across marketing, content, digital strategy, healthcare and entrepreneurship."
+>
+  <section class="section hero-small">
+    <div class="wrap">
+      <p class="eyebrow">About</p>
+      <h1>Two disciplines, one instinct for evidence.</h1>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="wrap grid-2 about-content">
+      <div class="about-lead">
+        <p class="lead">I'm a digital marketing and content strategist with a background in pharmacology — I've spent my career applying the same evidence-based instinct to campaigns that I first learned applying to a lab bench.</p>
+      </div>
+      <div>
+        <p>{settings?.bio}</p>
+        <p>My work splits into two modes. Inside organizations, I've run marketing operations that moved real numbers — doubling event sign-ups, growing a real estate brand's audience past 5,000 followers, and pushing a fashion label's Instagram past 100% growth in five months. I plan content calendars, run lead-generation campaigns, coordinate creative teams, and read the analytics closely enough to change course mid-campaign.</p>
+        <p>Outside organizations, I build. Brandora Media Services, ThePharmaDon, and the "Before It's Too Late" handbook all started as ideas I carried from brand identity through to a live website, using AI-assisted tools to move from concept to execution without waiting on a development team.</p>
+        <p>The pharmacology background isn't decorative. A B.Sc. in Pharmacology, Toxicology &amp; Therapeutics means I can sit inside healthcare and health-tech conversations with real scientific footing — useful for any brand that needs to communicate health information carefully and correctly, not just persuasively.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section skills-section">
+    <div class="wrap">
+      <p class="eyebrow">Skills</p>
+      <h2>What I bring to a team.</h2>
+      <div class="skills-grid">
+        {(skillCategories ?? []).map((cat) => (
+          <div class="skill-cat">
+            <h3 class="mono">{cat.name}</h3>
+            <ul>
+              {(cat.items ?? []).map((item: string) => <li>{item}</li>)}
+            </ul>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="section cta-section">
+    <div class="wrap cta-wrap">
+      <h2>Want the full picture?</h2>
+      <div class="cta-buttons">
+        {settings?.cv_url && <a href={settings.cv_url} class="btn btn-primary">Download CV</a>}
+        <a href="/contact" class="btn btn-ghost">Get in touch</a>
+      </div>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .hero-small { padding-bottom: 0; }
+  .about-content { align-items: start; }
+  .lead { font-family: var(--font-display); font-size: 1.5rem; color: var(--paper); line-height: 1.3; font-weight: 400; }
+
+  .skills-section { background: var(--ink-2); }
+  .skills-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2rem;
+    margin-top: 2.5rem;
+  }
+  @media (max-width: 860px) { .skills-grid { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 560px) { .skills-grid { grid-template-columns: 1fr; } }
+  .skill-cat h3 {
+    font-size: 0.78rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--signal);
+    margin-bottom: 1rem;
+  }
+  .skill-cat ul { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 0.5rem; }
+  .skill-cat li { color: var(--ash); font-size: 0.92rem; }
+
+  .cta-section { text-align: center; border-bottom: none; }
+  .cta-wrap { max-width: 500px; margin: 0 auto; }
+  .cta-buttons { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; }
+</style>

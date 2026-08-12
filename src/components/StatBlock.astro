@@ -1,0 +1,35 @@
+---
+interface Props {
+  value: string;
+  label: string;
+  context?: string;
+}
+const { value, label, context } = Astro.props;
+---
+
+<div class="stat">
+  <p class="stat-value mono">{value}</p>
+  <p class="stat-label">{label}</p>
+  {context && <p class="stat-context mono">{context}</p>}
+</div>
+
+<style>
+  .stat {
+    border-top: 1px solid var(--line-strong);
+    padding-top: 1.1rem;
+  }
+  .stat-value {
+    font-size: clamp(1.6rem, 3vw, 2.3rem);
+    color: var(--signal);
+    font-weight: 500;
+    margin: 0 0 0.35rem;
+  }
+  .stat-label { color: var(--paper); margin: 0 0 0.3rem; font-size: 0.95rem; }
+  .stat-context {
+    color: var(--ash-dim);
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin: 0;
+  }
+</style>

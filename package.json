@@ -1,0 +1,17 @@
+{
+  "name": "donald-okoli-portfolio",
+  "type": "module",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "astro dev",
+    "start": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview"
+  },
+  "dependencies": {
+    "astro": "^4.15.0",
+    "@astrojs/sitemap": "^3.2.1",
+    "@supabase/supabase-js": "^2.45.4"
+  }
+}

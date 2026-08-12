@@ -1,0 +1,46 @@
+---
+import Base from '../../layouts/Base.astro';
+import CaseStudyCard from '../../components/CaseStudyCard.astro';
+import { supabase } from '../../lib/supabase';
+
+const { data: caseStudies } = await supabase
+  .from('case_studies')
+  .select('*')
+  .eq('published', true)
+  .order('sort_order', { ascending: true });
+---
+
+<Base
+  title="Work"
+  description="Case studies from Donald Okoli's work in digital marketing, content strategy and campaign management across education, real estate and fashion."
+>
+  <section class="section hero-small">
+    <div class="wrap">
+      <p class="eyebrow">Work</p>
+      <h1>Case studies</h1>
+      <p class="intro">Curated evidence of strategy applied to real problems — the context, the approach, and what changed.</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="wrap">
+      <div class="grid-3">
+        {(caseStudies ?? []).map((cs) => (
+          <CaseStudyCard
+            href={`/work/${cs.slug}`}
+            title={cs.title}
+            client={cs.client}
+            industry={cs.industry}
+            summary={cs.summary}
+            date={cs.date}
+          />
+        ))}
+      </div>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .hero-small { padding-bottom: 1rem; }
+  .intro { max-width: 52ch; font-size: 1.05rem; }
+</style>

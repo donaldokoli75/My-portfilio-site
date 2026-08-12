@@ -1,0 +1,250 @@
+---
+import Base from '../layouts/Base.astro';
+import StatBlock from '../components/StatBlock.astro';
+import CaseStudyCard from '../components/CaseStudyCard.astro';
+import ProjectCard from '../components/ProjectCard.astro';
+import { supabase } from '../lib/supabase';
+
+const { data: settings } = await supabase.from('settings').select('*').eq('id', 1).single();
+
+const { data: caseStudiesRaw } = await supabase
+  .from('case_studies')
+  .select('*')
+  .eq('published', true)
+  .eq('featured', true)
+  .order('sort_order', { ascending: true })
+  .limit(3);
+
+const { data: scratchProjects } = await supabase
+  .from('projects')
+  .select('*')
+  .eq('published', true)
+  .eq('category', 'Built From Scratch')
+  .order('sort_order', { ascending: true });
+
+const { data: experience } = await supabase
+  .from('experience')
+  .select('*')
+  .eq('featured', true)
+  .order('sort_order', { ascending: true })
+  .limit(3);
+
+const { data: results } = await supabase
+  .from('results')
+  .select('*')
+  .order('sort_order', { ascending: true });
+
+const caseStudies = caseStudiesRaw ?? [];
+const domains = ['Marketing', 'Content', 'Brand', 'Digital Products', 'Healthcare'];
+---
+
+<Base title={settings?.name ?? 'Donald Okoli'} description={settings?.tagline ?? ''}>
+  <!-- HERO -->
+  <section class="hero section">
+    <div class="wrap">
+      <p class="eyebrow">{settings?.title}</p>
+      <h1>Donald Okoli</h1>
+      <p class="hero-statement">{settings?.tagline}</p>
+
+      <div class="hero-ctas">
+        <a href="/work" class="btn btn-primary">View My Work</a>
+        <a href="/contact" class="btn btn-ghost">Let's Work Together</a>
+        {settings?.cv_url && <a href={settings.cv_url} class="btn btn-ghost">Download CV</a>}
+      </div>
+
+      <div class="signal-strip mono" role="list" aria-label="Areas of work">
+        <span class="signal-tag">Signal:</span>
+        {domains.map((d, i) => (
+          <Fragment>
+            <span role="listitem">{d}</span>
+            {i < domains.length - 1 && <span class="sep" aria-hidden="true">/</span>}
+          </Fragment>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- SELECTED RESULTS -->
+  <section class="section">
+    <div class="wrap">
+      <p class="eyebrow">Selected Results</p>
+      <h2>Measurable outcomes, not vanity metrics.</h2>
+      <div class="stats-grid">
+        {(results ?? []).map((r) => <StatBlock value={r.value} label={r.label} context={r.context} />)}
+      </div>
+    </div>
+  </section>
+
+  <!-- ABOUT -->
+  <section class="section">
+    <div class="wrap grid-2 about-grid">
+      <div>
+        <p class="eyebrow">About</p>
+        <h2>Marketing built on evidence, not guesswork.</h2>
+      </div>
+      <div>
+        <p class="about-body">{settings?.bio}</p>
+        <a href="/about" class="link mono">More about my background &rarr;</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- FEATURED CASE STUDIES -->
+  <section class="section">
+    <div class="wrap">
+      <div class="section-head">
+        <div>
+          <p class="eyebrow">Featured Case Studies</p>
+          <h2>Proof, not just claims.</h2>
+        </div>
+        <a href="/work" class="link mono">All case studies &rarr;</a>
+      </div>
+      <div class="grid-3">
+        {caseStudies.map((cs) => (
+          <CaseStudyCard
+            href={`/work/${cs.slug}`}
+            title={cs.title}
+            client={cs.client}
+            industry={cs.industry}
+            summary={cs.summary}
+            date={cs.date}
+          />
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- BUILT FROM SCRATCH -->
+  <section class="section">
+    <div class="wrap">
+      <div class="section-head">
+        <div>
+          <p class="eyebrow amber">Built From Scratch</p>
+          <h2>I don't just execute — I build.</h2>
+        </div>
+        <a href="/projects" class="link mono">All projects &rarr;</a>
+      </div>
+      <div class="grid-3">
+        {(scratchProjects ?? []).map((p) => (
+          <ProjectCard
+            title={p.title}
+            role={p.role}
+            description={p.description}
+            highlights={p.highlights}
+            externalUrl={p.external_url}
+            linkLabel={p.link_label}
+          />
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- EXPERIENCE OVERVIEW -->
+  <section class="section">
+    <div class="wrap">
+      <div class="section-head">
+        <div>
+          <p class="eyebrow">Professional Experience</p>
+          <h2>Where the results were built.</h2>
+        </div>
+        <a href="/experience" class="link mono">Full experience &rarr;</a>
+      </div>
+      <div class="exp-list">
+        {(experience ?? []).map((e) => (
+          <div class="exp-row">
+            <p class="mono exp-dates">{e.start_date} — {e.end_date}</p>
+            <div>
+              <h3>{e.company}</h3>
+              <p class="exp-role mono">{e.role}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- HEALTHCARE + MARKETING ADVANTAGE -->
+  <section class="section healthcare-section">
+    <div class="wrap grid-2 about-grid">
+      <div>
+        <p class="eyebrow amber">Where Healthcare Meets Communication</p>
+        <h2>A pharmacology background, applied to marketing.</h2>
+      </div>
+      <div>
+        <p>My B.Sc. in Pharmacology, Toxicology &amp; Therapeutics gives me a scientific foundation that complements my marketing and content work — particularly useful for healthcare content, health-tech, pharma marketing, health communications and patient education.</p>
+        <p>This isn't a side interest. It's the same evidence-based instinct applied twice: once to how a message performs, and once to whether a health claim is actually true.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="section cta-section">
+    <div class="wrap cta-wrap">
+      <h2>Have a project, opportunity or role in mind?</h2>
+      <p>Open to remote roles, freelance work and consulting projects across marketing, content and health communication.</p>
+      <a href="/contact" class="btn btn-primary">Get in touch</a>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .hero { padding-top: clamp(3rem, 8vw, 6rem); }
+  .hero-statement { max-width: 46ch; font-size: 1.15rem; color: var(--ash); }
+  .hero-ctas { display: flex; flex-wrap: wrap; gap: 1rem; margin: 2rem 0 3rem; }
+
+  .signal-strip {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.6rem;
+    font-size: 0.78rem;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: var(--ash);
+    border-top: 1px solid var(--line);
+    padding-top: 1.5rem;
+  }
+  .signal-tag { color: var(--signal); }
+  .signal-strip .sep { color: var(--line-strong); }
+
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 1.5rem;
+    margin-top: 2.5rem;
+  }
+  @media (max-width: 960px) { .stats-grid { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 560px) { .stats-grid { grid-template-columns: 1fr; } }
+
+  .about-grid { align-items: start; }
+  .about-body { font-size: 1.05rem; }
+
+  .section-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    gap: 1.5rem;
+    margin-bottom: 2.5rem;
+  }
+  @media (max-width: 620px) { .section-head { flex-direction: column; align-items: flex-start; } }
+
+  .exp-list { display: flex; flex-direction: column; }
+  .exp-row {
+    display: grid;
+    grid-template-columns: 200px 1fr;
+    gap: 1.5rem;
+    padding: 1.5rem 0;
+    border-top: 1px solid var(--line);
+  }
+  .exp-row:last-child { border-bottom: 1px solid var(--line); }
+  .exp-dates { color: var(--ash-dim); font-size: 0.78rem; }
+  .exp-row h3 { margin-bottom: 0.3rem; font-size: 1.2rem; }
+  .exp-role { color: var(--ash); font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.03em; }
+  @media (max-width: 620px) { .exp-row { grid-template-columns: 1fr; gap: 0.4rem; } }
+
+  .healthcare-section { background: var(--ink-2); }
+
+  .cta-section { text-align: center; border-bottom: none; }
+  .cta-wrap { max-width: 640px; margin: 0 auto; }
+  .cta-wrap p { max-width: 44ch; margin-left: auto; margin-right: auto; margin-bottom: 2rem; }
+</style>
