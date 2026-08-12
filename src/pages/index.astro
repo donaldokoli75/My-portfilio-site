@@ -46,6 +46,8 @@ const domains = ['Marketing', 'Content', 'Brand', 'Digital Products', 'Healthcar
       <h1>Donald Okoli</h1>
       <p class="hero-statement">{settings?.tagline}</p>
 
+{settings?.photo_url && <img src={settings.photo_url} alt={settings.name} class="hero-photo" />}
+
       <div class="hero-ctas">
         <a href="/work" class="btn btn-primary">View My Work</a>
         <a href="/contact" class="btn btn-ghost">Let's Work Together</a>
@@ -190,6 +192,11 @@ const domains = ['Marketing', 'Content', 'Brand', 'Digital Products', 'Healthcar
 <style>
   .hero { padding-top: clamp(3rem, 8vw, 6rem); }
   .hero-statement { max-width: 46ch; font-size: 1.15rem; color: var(--ash); }
+.hero-photo {
+       width: 140px; height: 140px; border-radius: 50%;
+       object-fit: cover; border: 2px solid var(--line-strong);
+       margin-bottom: 1.5rem;
+     }
   .hero-ctas { display: flex; flex-wrap: wrap; gap: 1rem; margin: 2rem 0 3rem; }
 
   .signal-strip {
