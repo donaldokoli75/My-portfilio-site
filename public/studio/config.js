@@ -7,7 +7,7 @@ export const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiO
 // Netlify → Site configuration → Build & deploy → Build hooks → Add
 // build hook. Paste the URL below and the "Rebuild site" button (and
 // every save) will trigger a fresh deploy automatically.
-export const NETLIFY_BUILD_HOOK_URL = '';
+export const NETLIFY_BUILD_HOOK_URL = 'https://api.netlify.com/build_hooks/6a7d00ebaa2fdce9ec4c1e52';
 
 // Name of the public Supabase Storage bucket used for uploaded images
 // and the CV PDF. Matches the bucket created in supabase/schema.sql.
