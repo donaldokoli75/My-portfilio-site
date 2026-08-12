@@ -22,6 +22,7 @@ const SCHEMAS = {
       { key: 'location', label: 'Location', type: 'text' },
       { key: 'availability_enabled', label: 'Show availability banner', type: 'boolean' },
       { key: 'availability_label', label: 'Availability text', type: 'text' },
+      { key: 'photo_url', label: 'Your Photo', type: 'image', hint: 'A headshot for the homepage. Upload anytime to replace it.' },
       { key: 'cv_url', label: 'CV File', type: 'image', hint: 'Upload your CV as a PDF — this powers every "Download CV" button on the site.', accept: 'application/pdf' },
       { key: 'social_linkedin', label: 'LinkedIn URL', type: 'text' },
       { key: 'social_instagram', label: 'Instagram URL', type: 'text' },
